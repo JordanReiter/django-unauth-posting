@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{% block title %}Confirm action: {{ action }}{% endblock title %}</h1>
+
+<div id="confirm-message">
+	{% if confirm_message %}
+		{{ confirm_message }}
+	{% else %}
+		{% if action %}
+			Please confirm that you wish to {{ action|safe }}:
+		{% else %}
+			Please confirm that you wish to continue with your form submission.
+		{% endif %}
+	{% endif %}
+</div>
+<form method="post" action="">{% csrf_token %}
+	{% if form.visible_fields %}
+		<ol class="fields">
+			{% for field in form.visible_fields %}
+        		{{ field.label_tag }}{{ field }}
+			{% endfor %}
+		</ol>
+	{% endif %}
+	{% for hidden in form.hidden_fields %}
+	{{ hidden }}
+	{% endfor %}
+	<input type="hidden" name="_upreq" value="{{ request_key }}" />
+	<input type="submit" value="Confirm" />
+</form>
+{% endblock content %}
