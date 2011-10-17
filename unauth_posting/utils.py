@@ -57,7 +57,7 @@ def save_record(request, form, files=None, success_message=None, redirect_url=No
 
 def handle_saved_data(request, form_class, args=[], kwargs={}, action=None, 
                       confirm_message=None, success_message=None, 
-                      redirect_url=None, template_name="unauth_posting/confirm.html"):
+                      redirect_url=None, template_name="unauth_posting/confirm.html", **extra_context):
     request_key = request.REQUEST.get('_upreq', False)
     SAVED_POST, SAVED_FILES, request_key = get_saved_data(request)
     if request.method == 'POST':
@@ -72,7 +72,9 @@ def handle_saved_data(request, form_class, args=[], kwargs={}, action=None,
                 del form.fields[f]
             else:
                 form.fields[f].widget = forms.HiddenInput()
-    return render(request, template_name, locals())
+    ctx = locals()
+    ctx.update(extra_context)
+    return render(request, template_name, ctx)
 
 def save_if_authenticated(request, form, redirect_url=None,  
                           success_message=None, login_message=None,
